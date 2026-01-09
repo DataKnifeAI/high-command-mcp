@@ -27,6 +27,9 @@ help:
 	@echo "  format         Format code with black and ruff"
 	@echo "  clean          Remove build artifacts and cache files"
 	@echo "  docker-build   Build Docker image"
+	@echo "  docker-login   Login to Harbor registry (requires HARBOR_USERNAME and HARBOR_PASSWORD)"
+	@echo "  docker-push    Build and push image to Harbor registry"
+	@echo "  docker-pull    Pull image from Harbor registry"
 	@echo "  docker-run     Run Docker container"
 	@echo "  docs           Build documentation"
 	@echo "  docs-serve     Serve documentation locally"
@@ -72,8 +75,31 @@ clean:
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
 	rm -rf build dist .pytest_cache .mypy_cache htmlcov .ruff_cache
 
+HARBOR_REGISTRY := harbor.dataknife.net
+APP_NAME := high-command-mcp
+HARBOR_IMAGE := $(HARBOR_REGISTRY)/library/$(APP_NAME)
+IMAGE_TAG ?= latest
+
+docker-login:
+	@echo "Logging into Harbor registry..."
+	@if [ -z "$$HARBOR_USERNAME" ] || [ -z "$$HARBOR_PASSWORD" ]; then \
+		echo "Error: HARBOR_USERNAME and HARBOR_PASSWORD must be set"; \
+		exit 1; \
+	fi
+	docker login $(HARBOR_REGISTRY) \
+		-u "$$HARBOR_USERNAME" \
+		-p "$$HARBOR_PASSWORD"
+
 docker-build:
 	docker build -t high-command:latest .
+	docker tag high-command:latest $(HARBOR_IMAGE):$(IMAGE_TAG)
+
+docker-push: docker-build docker-login
+	docker push $(HARBOR_IMAGE):$(IMAGE_TAG)
+
+docker-pull:
+	docker pull $(HARBOR_IMAGE):$(IMAGE_TAG)
+	docker tag $(HARBOR_IMAGE):$(IMAGE_TAG) high-command:latest
 
 docker-run: docker-build
 	docker run -it --rm high-command:latest
