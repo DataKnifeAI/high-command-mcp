@@ -7,9 +7,9 @@ variables:
 
 build:
   stage: build
-  image: golang:1.23-alpine
+  image: harbor.dataknife.net/dockerhub/library/golang:1.23-alpine
   script:
-    - apk add --no-cache make git
+    - apk add --no-cache make git bash
     - make build
   artifacts:
     paths:
