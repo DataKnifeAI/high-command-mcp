@@ -1,6 +1,7 @@
 stages:
   - build
   - docker
+  - release
 
 variables:
   IMAGE_NAME: high-command-mcp
@@ -51,5 +52,25 @@ publish:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
     - if: '$CI_COMMIT_TAG'
+  tags:
+    - kubernetes
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  dependencies:
+    - build
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never                                  # Do not run this job when a tag is created manually
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
+  script:
+    - |
+      echo "Creating release for commit $CI_COMMIT_SHORT_SHA"
+      echo "Release will create tag automatically"
+  release:                               # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+    tag_name: 'v0.$CI_PIPELINE_IID'     # The version is incremented per pipeline
+    description: 'Release v0.$CI_PIPELINE_IID'
+    ref: '$CI_COMMIT_SHA'                # The tag is created from the pipeline SHA
   tags:
     - kubernetes
