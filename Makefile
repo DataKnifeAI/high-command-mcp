@@ -1,4 +1,4 @@
-.PHONY: help install dev test lint format clean docker-build docker-run docs run venv check all check-all commit-changes release
+.PHONY: help install dev test lint format clean build docker-build docker-run docs run venv check all check-all commit-changes release
 
 # Force use of bash shell (required for make to work properly with line continuations)
 SHELL := /bin/bash
@@ -25,6 +25,7 @@ help:
 	@echo "  test-fast      Run tests without coverage"
 	@echo "  lint           Run linters (ruff, mypy)"
 	@echo "  format         Format code with black and ruff"
+	@echo "  build          Build Python package (creates dist/)"
 	@echo "  clean          Remove build artifacts and cache files"
 	@echo "  docker-build   Build Docker image"
 	@echo "  docker-login   Login to Harbor registry (requires HARBOR_USERNAME and HARBOR_PASSWORD)"
@@ -68,6 +69,10 @@ lint:
 format:
 	$(BLACK) highcommand tests
 	$(RUFF) check --fix .
+
+build: clean
+	pip install --upgrade pip build
+	python -m build
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +
