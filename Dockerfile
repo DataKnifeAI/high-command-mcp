@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy project files
 COPY pyproject.toml README.md /app/
 COPY highcommand/ /app/highcommand/
-# Install Python dependencies
-RUN pip install --no-cache-dir -e .
+# Install Python dependencies with HTTP support for Kubernetes deployment
+RUN pip install --no-cache-dir -e ".[http]"
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
