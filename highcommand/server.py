@@ -19,7 +19,8 @@ from mcp.types import (
 from highcommand.tools import HighCommandTools
 
 # Configure logging
-logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)
 
 # Initialize server and tools
