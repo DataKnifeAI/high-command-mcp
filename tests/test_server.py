@@ -10,10 +10,10 @@ from highcommand.server import call_tool, list_tools
 
 @pytest.mark.asyncio
 async def test_list_tools():
-    """Test that tools are properly listed."""
+    """Test that tools are properly listed (raw + get_raw_api + outcome + analytics)."""
     tools = await list_tools()
 
-    assert len(tools) == 7
+    assert len(tools) == 16
     tool_names = {tool.name for tool in tools}
 
     expected_tools = {
@@ -24,6 +24,15 @@ async def test_list_tools():
         "get_planet_status",
         "get_biomes",
         "get_factions",
+        "get_raw_api",
+        "get_war_summary",
+        "get_where_to_deploy",
+        "get_liberation_priority",
+        "get_mission_efficiency_snapshot",
+        "get_mission_analytics",
+        "get_war_analytics",
+        "get_planet_analytics",
+        "query_stats",
     }
 
     assert tool_names == expected_tools
@@ -231,3 +240,35 @@ async def test_call_tool_get_factions():
         content = json.loads(result[0].text)
         assert content["status"] == "success"
         assert content["data"] == mock_data
+
+
+@pytest.mark.asyncio
+async def test_call_tool_get_war_summary():
+    """Test outcome tool get_war_summary."""
+    mock_war = {"data": {"id": 1, "index": 801, "endDate": "2028-02-08T20:04:55.000Z", "phase": "active"}}
+
+    with patch("highcommand.tools.HighCommandAPIClient") as mock_client_class:
+        mock_client = AsyncMock()
+        mock_client_class.return_value = mock_client
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = None
+        mock_client.get_war_status.return_value = mock_war
+
+        result = await call_tool("get_war_summary", {})
+
+        assert len(result) == 1
+        content = json.loads(result[0].text)
+        assert content["status"] == "success"
+        assert content.get("outcome") == "ok"
+        assert "summary" in content
+
+
+@pytest.mark.asyncio
+async def test_call_tool_query_stats_missing_metric():
+    """Test query_stats with missing required parameter."""
+    result = await call_tool("query_stats", {})
+
+    assert len(result) == 1
+    content = json.loads(result[0].text)
+    assert content["status"] == "error"
+    assert "metric" in content["error"].lower()

@@ -7,7 +7,7 @@ from highcommand.server import call_tool
 
 
 async def test_all_endpoints():
-    """Test all 7 available MCP tools."""
+    """Test raw + outcome + analytics MCP tools."""
     print("\n" + "=" * 70)
     print("  HIGH-COMMAND MCP SERVER - ALL ENDPOINTS DEMONSTRATION")
     print("=" * 70 + "\n")
