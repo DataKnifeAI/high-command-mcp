@@ -6,9 +6,8 @@ from typing import Any, Callable
 
 import structlog
 
+from highcommand import analytics, outcomes
 from highcommand.api_client import HighCommandAPIClient
-from highcommand import analytics
-from highcommand import outcomes
 
 logger = structlog.get_logger(__name__)
 
