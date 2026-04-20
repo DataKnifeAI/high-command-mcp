@@ -34,7 +34,7 @@ Your High-Command MCP Server project has been successfully set up. Here's what's
 - [x] Makefile with common tasks
 - [x] Development scripts
 - [x] Environment variable template (.env.example)
-- [x] License (MIT)
+- [x] License (Apache-2.0)
 
 ## 🚀 Next Steps
 

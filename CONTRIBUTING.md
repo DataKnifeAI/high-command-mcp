@@ -148,7 +148,7 @@ Before submitting a PR, ensure:
 
 ## License
 
-By contributing to High-Command, you agree that your contributions will be licensed under the MIT License.
+By contributing to High-Command, you agree that your contributions will be licensed under the Apache License, Version 2.0.
 
 ---
 
