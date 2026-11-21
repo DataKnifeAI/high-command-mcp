@@ -1,5 +1,8 @@
 # High-Command: High-Command API MCP Server
 
+![High-Command MCP — holographic war map over a dark command console](docs/assets/high-command-mcp-hero.jpg)
+
+
 A Model Context Protocol (MCP) server for seamless integration with the High-Command API. This project provides tools and resources to access real-time Helldivers 2 game data through a comprehensive, dedicated game data API.
 
 ## Features
